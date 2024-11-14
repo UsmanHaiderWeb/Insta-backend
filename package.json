@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./app.js"
+    "build": "npm install",
+    "dev": "node ./app.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
