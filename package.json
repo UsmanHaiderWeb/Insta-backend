@@ -2,6 +2,7 @@
   "name": "practice2",
   "version": "0.0.0",
   "private": true,
+  "main": "app.js",
   "scripts": {
     "build": "npm install",
     "dev": "node ./app.js"
