@@ -11,21 +11,25 @@ const router = express();
 router.post('/api/login', async (req, res) => {
     try {
         if (Object.keys(req.body).length == 0) {
-            res.status(210).json({message: "Something went wrong."})
+            return res.status(210).json({message: "Something went wrong."})
         } else {
             let {email, password} = req.body;
-            const user = await userModel.findOne({email})
-            if (user == null) {
-                res.status(210).json({message: "User doesn't exist."})
+            const users = await userModel.find({email})
+            if (users.length == 0) {
+                return res.status(210).json({message: "User doesn't exist."})
             } else {
-                bcrypt.compare(password, user.password, (err, result) => {
-                    if (result) {
+                let sent = false;
+                for (let user of users) {
+                    let result = await bcrypt.compare(password, user.password)
+                    if (result && !sent) {
                         let token = jwt.sign({id: user._id}, "Hello! I am building Insta Clone.")
-                        res.status(200).json({message: "User has been loggedIn", token})
-                    } else {
-                        res.status(210).json({message: "Email or password is wrong."})
+                        sent = true;
+                        return res.status(200).json({message: "User has been loggedIn", token})
                     }
-                })
+                };
+                if (!sent) {
+                    return res.status(210).json({message: "Email or password is wrong."})
+                }
             }
         }
     } catch (error) {
